@@ -5,12 +5,18 @@ var bodyParser = require('body-parser');
 var app = express();
 // Parse post requests properly
 app.use(bodyParser.json());
+// Add headers so Angular works
+app.use(function (req, res, next) {
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,DELETE,PUT');
+    next();
+});
 // External Routes
 var userRoute = require('./routes/users');
 app.use('/users', userRoute);
 // Routes
-app.get('/', function (req, res) {
-    res.send('Incorrect path, try another');
+app.get('/', function (req, res, next) {
+    res.send('Incorrect path');
 });
 // Mongoose (connecting to db)
 mongoose.connect('mongodb://localhost:27017/todos', monConf, function () {

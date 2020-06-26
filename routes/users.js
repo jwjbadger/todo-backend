@@ -6,6 +6,7 @@ const User = require('../models/User');
 // Routes
 
 router.get('/:name', async (req, res) => {
+  // Get from database
   try {
     const user = await User.findOne({ name: req.params.name });
     res.status(200).json(user);
