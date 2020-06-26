@@ -30,6 +30,15 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.delete('/:userId', async (req, res) => {
+  try {
+    const removedUser = await User.remove({ _id: req.params.userId });
+    res.status(200).json(removedUser);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 router.patch('/:userId', async (req, res) => {
   try {
     const updatedUser = await User.updateOne(
