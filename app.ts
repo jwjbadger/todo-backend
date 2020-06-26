@@ -1,8 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const monConf = require('./mongoose.conf.json');
+const bodyParser = require('body-parser');
 
 const app = express();
+
+// Parse post requests properly
+app.use(bodyParser.json());
 
 // External Routes
 
@@ -12,12 +16,13 @@ app.use('/users', userRoute);
 // Routes
 
 app.get('/', (req, res) => {
-  res.send('ok');
+  res.send('Incorrect path, try another');
 });
 
 // Mongoose (connecting to db)
 
-mongoose.connect('mongodb://localhost:27017/users', monConf, () => {
+mongoose.connect('mongodb://localhost:27017/todos', monConf, () => {
+  console.log('Got database with options:');
   console.log(monConf);
 });
 
