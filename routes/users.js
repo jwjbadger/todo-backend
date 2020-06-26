@@ -12,12 +12,7 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
   const user = new User({
     name: req.body.name,
-    todos: {
-      id: req.body.todos.id,
-      title: req.body.todos.title,
-      description: req.body.todos.description,
-      completed: req.body.todos.completed,
-    },
+    todos: req.body.todos,
   });
 
   // Save to the database

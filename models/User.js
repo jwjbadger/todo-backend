@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
 
+const Todo = require('../models/Todo');
+
 const UserSchema = mongoose.Schema({
   name: String,
   todos: {
-    id: Number,
-    title: String,
-    description: String,
-    completed: Boolean,
+    type: [Todo],
   },
 });
 
