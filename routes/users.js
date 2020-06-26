@@ -30,4 +30,16 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.patch('/:userId', async (req, res) => {
+  try {
+    const updatedUser = await User.updateOne(
+      { _id: req.params.userId },
+      { $set: { todos: req.body.todos } }
+    );
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
