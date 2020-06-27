@@ -11,7 +11,11 @@ app.use(bodyParser.json());
 // Add headers so Angular works
 app.use((req, res, next) => {
   res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,DELETE,PUT');
+  res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,DELETE,PUT,PATCH');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Access-Control-Allow-Methods'
+  );
   next();
 });
 
