@@ -1,45 +1,71 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
 
+const verify = require('./verifyToken');
+
 // Routes
 
-router.get('/:name', async (req, res) => {
+// Login
+router.post('/login', async (req, res) => {
   // Get from database
-  try {
-    const user = await User.findOne({ name: req.params.name });
-    res.status(200).json(user);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+  const user = await User.findOne({ name: req.body.name });
+  if (user == null)
+    return res.status(400).json({ err: 'Invalid username/password' });
+
+  // Password check
+  const validPass = await bcrypt.compare(req.body.password, user.password);
+  if (!validPass)
+    return res.status(400).json({ err: 'Invalid username/password' });
+
+  // JWT
+  const token = jwt.sign({ _id: user._id }, process.env.token);
+  res.header('auth-token', token).json({ token: token });
 });
 
-router.post('/', async (req, res) => {
+// Register
+router.post('/register', async (req, res) => {
+  // Validate unique username
+  const userCheck = await User.findOne({ name: req.body.name });
+  if (userCheck != null) {
+    return res.status(400).json({ err: 'Username already in use' });
+  }
+
+  // Generate Salt
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(req.body.password, salt);
+
+  // Get user from input
   const user = new User({
     name: req.body.name,
+    password: hashPassword,
     todos: req.body.todos,
   });
 
   // Save to the database
   try {
     const savedUser = await user.save();
-    res.status(200).json(savedUser);
+    res.status(200).json({ _id: savedUser._id });
   } catch (err) {
-    res.status(500).json(err);
+    res.status(400).json(err);
   }
 });
 
-router.delete('/:userId', async (req, res) => {
+// Delete user
+router.delete('/:userId', verify, async (req, res) => {
   try {
     const removedUser = await User.remove({ _id: req.params.userId });
     res.status(200).json(removedUser);
   } catch (err) {
-    res.status(500).json(err);
+    res.status(400).json(err);
   }
 });
 
-router.patch('/:userId', async (req, res) => {
+// Patch user
+router.patch('/:userId', verify, async (req, res) => {
   try {
     const updatedUser = await User.updateOne(
       { _id: req.params.userId },
@@ -47,7 +73,17 @@ router.patch('/:userId', async (req, res) => {
     );
     res.status(200).json(updatedUser);
   } catch (err) {
-    res.status(500).json(err);
+    res.status(400).json(err);
+  }
+});
+
+// Get todos
+router.get('/:_id', verify, async (req, res) => {
+  try {
+    const todos = await User.findOne({ _id: req.params._id });
+    res.status(200).json(todos);
+  } catch {
+    res.status(400).json(err);
   }
 });
 

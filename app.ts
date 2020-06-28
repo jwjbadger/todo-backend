@@ -1,12 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const monConf = require('./mongoose.conf.json');
-const bodyParser = require('body-parser');
+var sanitize = require('mongo-sanitize');
+const dotenv = require('dotenv');
 
 const app = express();
 
+// Use .env
+dotenv.config();
+
 // Parse post requests properly
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Add headers so Angular works
 app.use((req, res, next) => {
@@ -16,6 +20,7 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Headers',
     'Content-Type, Access-Control-Allow-Methods'
   );
+  req.body = sanitize(req.body);
   next();
 });
 
@@ -26,8 +31,8 @@ app.use('/users', userRoute);
 
 // Routes
 
-app.get('/', (req, res, next) => {
-  res.send('Incorrect path');
+app.get('/', (req, res) => {
+  res.json({ err: 'Incorrect path' });
 });
 
 // Mongoose (connecting to db)
