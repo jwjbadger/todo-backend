@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(function (req, res, next) {
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,DELETE,PUT,PATCH');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Methods');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Methods, Access-Control-Allow-Headers, auth-token');
     req.body = sanitize(req.body);
     next();
 });
