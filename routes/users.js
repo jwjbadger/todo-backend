@@ -34,6 +34,10 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ err: 'Username already in use' });
   }
 
+  if (isEmptyOrSpaces(req.body.name) || isEmptyOrSpaces(req.body.password)) {
+    return res.status(400).json({ err: 'Invalid username/password' });
+  }
+
   // Generate Salt
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(req.body.password, salt);
@@ -86,5 +90,9 @@ router.get('/:_id', verify, async (req, res) => {
     res.status(400).json(err);
   }
 });
+
+function isEmptyOrSpaces(str) {
+  return str === null || str.match(/^ *$/) !== null;
+}
 
 module.exports = router;
