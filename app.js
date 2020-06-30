@@ -19,6 +19,8 @@ app.use(function (req, res, next) {
 // External Routes
 var userRoute = require('./routes/users');
 app.use('/users', userRoute);
+var projectRoute = require('./routes/projects');
+app.use('/projects', projectRoute);
 // Routes
 app.get('/', function (req, res) {
     res.json({ err: 'Incorrect path' });

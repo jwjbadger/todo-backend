@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Todo = require('../models/Todo');
+const Todo = require('./Todo');
 
 const UserSchema = mongoose.Schema({
   name: String,
@@ -9,5 +9,7 @@ const UserSchema = mongoose.Schema({
     type: [Todo],
   },
 });
+
+UserSchema.set('collection', 'users');
 
 module.exports = mongoose.model('User', UserSchema);

@@ -29,6 +29,9 @@ app.use((req, res, next) => {
 const userRoute = require('./routes/users');
 app.use('/users', userRoute);
 
+const projectRoute = require('./routes/projects');
+app.use('/projects', projectRoute);
+
 // Routes
 
 app.get('/', (req, res) => {
