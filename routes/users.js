@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
 
-const verify = require('./verifyToken');
+const verify = require('./verify');
 
 // Routes
 
@@ -34,7 +34,10 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ err: 'Username already in use' });
   }
 
-  if (isEmptyOrSpaces(req.body.name) || isEmptyOrSpaces(req.body.password)) {
+  if (
+    verify.isEmptyOrSpaces(req.body.name) ||
+    verify.isEmptyOrSpaces(req.body.password)
+  ) {
     return res.status(400).json({ err: 'Invalid username/password' });
   }
 
@@ -59,7 +62,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Delete user
-router.delete('/:userId', verify, async (req, res) => {
+router.delete('/:userId', verify.verify, async (req, res) => {
   try {
     const removedUser = await User.remove({ _id: req.params.userId });
     res.status(200).json(removedUser);
@@ -69,7 +72,7 @@ router.delete('/:userId', verify, async (req, res) => {
 });
 
 // Patch user
-router.patch('/:userId', verify, async (req, res) => {
+router.patch('/:userId', verify.verify, async (req, res) => {
   try {
     const updatedUser = await User.updateOne(
       { _id: req.params.userId },
@@ -82,7 +85,7 @@ router.patch('/:userId', verify, async (req, res) => {
 });
 
 // Get todos
-router.get('/:_id', verify, async (req, res) => {
+router.get('/:_id', verify.verify, async (req, res) => {
   try {
     const todos = await User.findOne({ _id: req.params._id });
     res.status(200).json(todos);
@@ -90,9 +93,5 @@ router.get('/:_id', verify, async (req, res) => {
     res.status(400).json(err);
   }
 });
-
-function isEmptyOrSpaces(str) {
-  return str === null || str.match(/^ *$/) !== null;
-}
 
 module.exports = router;
