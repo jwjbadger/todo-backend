@@ -33,7 +33,7 @@ router.put('/:_id', verify.verify, async (req, res) => {
       return res.status(400).json({ err: 'Invalid users' });
     }
 
-    Project.updateOne(
+    const updated = await Project.replaceOne(
       { _id: req.params._id },
       {
         name: req.body.name,
@@ -42,9 +42,19 @@ router.put('/:_id', verify.verify, async (req, res) => {
         todos: req.body.todos,
       }
     );
-    res.status(200).json(req.body);
+    res.status(200).json(updated);
   } catch (err) {
     res.status(400).json({ err: err });
+  }
+});
+
+// Delete a project
+router.delete('/:_id', verify.verify, async (req, res) => {
+  try {
+    const removedProject = await Project.remove({ _id: req.params._id });
+    res.status(200).json(removedProject);
+  } catch (err) {
+    res.status(400).json(err);
   }
 });
 
