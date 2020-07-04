@@ -4,7 +4,6 @@ const router = express.Router();
 const Project = require('../models/Project');
 
 const verify = require('./verify');
-const { json } = require('body-parser');
 
 // Post a new project to the project list
 router.post('/', verify.verify, async (req, res) => {
@@ -13,7 +12,7 @@ router.post('/', verify.verify, async (req, res) => {
       return res.status(400).json({ err: 'Invalid users' });
     }
     const project = new Project({
-      name: req.body.name,
+      title: req.body.title,
       description: req.body.description,
       users: req.body.users,
       todos: req.body.todos,
@@ -36,7 +35,7 @@ router.put('/:_id', verify.verify, async (req, res) => {
     const updated = await Project.replaceOne(
       { _id: req.params._id },
       {
-        name: req.body.name,
+        title: req.body.title,
         description: req.body.description,
         users: req.body.users,
         todos: req.body.todos,

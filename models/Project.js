@@ -11,7 +11,7 @@ const UserSchema = mongoose.Schema({
 });
 
 const ProjectSchema = mongoose.Schema({
-  name: String,
+  title: String,
   description: String,
   users: {
     type: [String],
