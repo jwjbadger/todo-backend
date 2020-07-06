@@ -2,14 +2,6 @@ const mongoose = require('mongoose');
 
 const Todo = require('./Todo');
 
-const UserSchema = mongoose.Schema({
-  name: String,
-  password: String,
-  todos: {
-    type: [Todo],
-  },
-});
-
 const ProjectSchema = mongoose.Schema({
   title: String,
   description: String,
